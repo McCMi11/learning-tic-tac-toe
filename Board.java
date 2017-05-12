@@ -29,11 +29,7 @@ public class Board
   ArrayList<Integer> blackMoves = new ArrayList<Integer>();
   //Used to tally number of wins with posistions
   ArrayList<Integer> winWithMove = new ArrayList<Integer>();
-  ArrayList<String> possibleMoves = newArrayList<String>()
-  {{add("0");add("1");add("2");add("3");add("4");
-        add("5");add("6");add("7");add("8");}};
-    
-    
+  
   //Possible wins.
   ArrayList<Integer> winOne = new ArrayList<Integer>()
   {{add(0);add(1);add(2);}};
@@ -48,7 +44,7 @@ public class Board
   ArrayList<Integer> winSix = new ArrayList<Integer>()
   {{add(0);add(3);add(6);}};
   ArrayList<Integer> winSeven = new ArrayList<Integer>()
-  {{add(1);add(4);add(5);}};
+  {{add(1);add(4);add(7);}};
   ArrayList<Integer> winEight = new ArrayList<Integer>()
   {{add(2);add(5);add(8);}};
   
@@ -61,14 +57,10 @@ public class Board
         this.pieces.add(new Red(move));
         this.nextMove = 1;
         redMoves.add(move);
-        System.out.println("Red moves: " + redMoves);
-        System.out.println("Black moves: " + blackMoves);
       }else {
         this.pieces.add(new Black(move));
         this.nextMove = 0;
         blackMoves.add(move);
-        System.out.println("Red moves: " + redMoves);
-        System.out.println("Black moves: " + blackMoves);
       }
     }else {
       pieces.removeAll(pieces);
@@ -80,10 +72,6 @@ public class Board
     if (checkWin()){
       status = -1;
       moveNum = 0;
-      possibleMoves.removeAll(possibleMoves);
-      possibleMoves = newArrayList<String>()
-        {{add("0");add("1");add("2");add("3");add("4");
-            add("5");add("6");add("7");add("8");}};      
     }
     repaint();
   }
@@ -152,24 +140,10 @@ public class Board
     this(1,1,1,1,1,1,1,1,1);
   }
   
-  private int winMove(ArrayList<Integer> moves, int i){
-      
-    if(i == 0){ //Black
-       for(String m : moves){
-           if(checkWin()){
-               
-               return Integer.parseInt(m);
-           }
-       }
-    }else{  //Red
-       for(){
-           
-       }
-   }
-  }
-    
   private boolean checkWin(){
-    if (redMoves.containsAll(winFour) || 
+    int ranAdd = (int)(Math.random() * 9);
+    int ranAddTwo = (int)(Math.random() * 9);
+    if (redMoves.containsAll(winOne) || 
         redMoves.containsAll(winTwo) || 
         redMoves.containsAll(winThree) || 
         redMoves.containsAll(winFour) || 
@@ -182,6 +156,7 @@ public class Board
       for (int r : redMoves){
         winWithMove.set(r, winWithMove.get(r) + 1);
       }
+      winWithMove.set(ranAdd, winWithMove.get(ranAdd) + 1);
       return true;
     }else if (blackMoves.containsAll(winOne) || 
               blackMoves.containsAll(winTwo) || 
@@ -195,30 +170,33 @@ public class Board
       for (int b : blackMoves){
         winWithMove.set(b, winWithMove.get(b) + 1);
       }
+      winWithMove.set(ranAdd, winWithMove.get(ranAdd) + 1);
+      winWithMove.set(ranAdd, winWithMove.get(ranAddTwo) + 1);
       return true;
     }else if (this.moveNum > 9){
       numDraw += 1;
-      //add random so it can keep playing
+      winWithMove.set(ranAdd, winWithMove.get(ranAdd) + 1);
+      winWithMove.set(ranAdd, winWithMove.get(ranAddTwo) + 1);
       return true;
     }
     return false;
   }
-    
+  
   private int findMove(){
-    
+    boolean moveNotMade = true;
     ArrayList<Integer> newWinMove = new ArrayList<Integer>(winWithMove);
     int index;
     do{ 
       int bestMove =  Collections.max(newWinMove);
       index = newWinMove.indexOf(bestMove);
-      if(redMoves.contains(index)){
-          newWinMove.set(index, 0);
-      }else if(blackMoves.contains(index)){
-          newWinMove.set(index,0);
-      }else{return index;}
+      if(!(redMoves.contains(index))){
+        if(!(blackMoves.contains(index))){
+          return index;
+        }else{ newWinMove.set(index,0);};
+      }else{ newWinMove.set(index,0);};
     }while(moveNotMade);
     return index;
-    }
+  }
   
   public static void main(String[] args){
     new Board();
